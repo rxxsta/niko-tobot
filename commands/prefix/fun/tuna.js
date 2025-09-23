@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 const fs = require('fs');
 const crypto = require('crypto');
-const mstunaFolder = fs.readdirSync('./media/tuna');
+const mstunaFolder = fs.readdirSync('./media/mstuna');
 
 module.exports = {
 	name: 'tuna',
