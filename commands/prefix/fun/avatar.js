@@ -4,7 +4,7 @@ const { prefix } = require('./../../../config.json');
 module.exports = {
 	name: 'avatar',
 	description: 'Displays a user\'s avatar',
-	usage: '@<Username>',
+	usage: '@<username>',
 	guildOnly: false,
 	async execute(message, args) {
 		const members = message.mentions.users;

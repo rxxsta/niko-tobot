@@ -5,7 +5,7 @@ const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
 	name: 'bunny',
-	aliases: [ 'rabbit'],
+	aliases: ['rabbit'],
 	description: 'Shows a random bunny',
 	usage: '',
 	guildOnly: false,

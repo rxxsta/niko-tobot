@@ -5,6 +5,7 @@ const mstunaFolder = fs.readdirSync('./media/mstuna');
 
 module.exports = {
 	name: 'tuna',
+	aliases: ['mstuna'],
 	description: 'Random Ms. Tuna pictures',
 	usage: '',
 	guildOnly: false,
