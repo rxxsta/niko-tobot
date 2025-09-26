@@ -13,7 +13,7 @@ module.exports = {
 		// ----------- HANDLES COMMANDS WITH PREFIX AFTER THIS POINT -------------
 		if (!message.content.startsWith(prefix)) return;
 
-		// holds any arguments e.g. ?weather houston ; where houston is an arg
+		// holds any arguments e.g. ?search test ; where test is an arg
 		const args = message.content.slice(prefix.length).trim().split(/ +/);
 		const commandName = args.shift().toLowerCase();
 

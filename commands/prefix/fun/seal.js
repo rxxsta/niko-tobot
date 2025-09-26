@@ -5,6 +5,7 @@ const sealFolder = fs.readdirSync('./media/seal');
 
 module.exports = {
 	name: 'seal',
+	aliases: ['pinniped'],
 	description: 'Shows a random seal',
 	usage: '',
 	guildOnly: false,
