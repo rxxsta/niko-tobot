@@ -16,30 +16,57 @@ module.exports = {
 		const URL = 'https://kagi.com/mother/context';
 		const userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36';
 		const cookie = `kagi_session=${process.env.KAGI_TOKEN}`;
-		const query = args.toString();
+		const query = args.join(' ');
 
+		// Empty POST body
 		axios.post(URL, {
-			q: query,
 		}, {
+			params: {
+				// axios auto URL encodes
+				q: query,
+			},
 			headers: {
 				'User-Agent': userAgent,
-				'Content-Type': 'application/x-www-form-urlencoded',
+				'Accept': 'application/vnd.kagi.stream',
+				'Accept-Language': 'en-US,en;q=0.5',
+				'Accept-Encoding': 'gzip, deflate, br, zstd',
+				// Kagi URL encodes the referer
+				'Referer': 'https://kagi.com/search?q=' + new URLSearchParams(query),
+				'Origin': 'https://kagi.com',
+				'DNT': '1',
 				'Cookie': cookie,
+				'Sec-GPC': '1',
+				'Sec-Fetch-Dest': 'empty',
+				'Sec-Fetch-Mode': 'cors',
+				'Sec-Fetch-Site': 'same-origin',
+				'Priority': 'u=4',
+				'Content-Length': '0',
+				'TE': 'trailers',
 			},
 		}).then(response => {
-			// ai summary from search
-			const reply = response.data.output_data.markdown + '\n';
-			// references
-			// wrap the url in <> to prevent embeds in message.reply()
-			const references = response.data.output_data.md_references.replace(/\]\((https?:\/\/[^)]+)\)/g, '](<$1>)');
+			// First line in response contains some metadata
+			// Second line contains new_message.json
+			const message_line = response.data.split('\n')[1];
+			// Parse new_message.json and remove the weird null bytes
+			const new_message = (message_line.substring(message_line.indexOf(':') + 1)).replace('\x00', '');
+
+			// The actual JSON
+			const json = JSON.parse(new_message);
+
+			// AI summary from search
+			const reply = json.md + '\n';
+			// References
+			// Wrap the urls in <> to prevent embeds in message.reply()
+			const references = json.references_md.replace(/\]\((https?:\/\/[^)]+)\)/g, '](<$1>)');
 			const fullContent = reply + references;
 			// Discord has a max message length of 2000 characters...
 			const maxLength = 2000;
 
+			// If the reply is <= maxLength then cool
 			if (fullContent.length <= maxLength) {
 				return message.reply({ content: fullContent });
 			}
-
+			// ELSE we gotta split stuff
 
 			// Split into chunks by lines
 			const lines = fullContent.split('\n');
@@ -70,7 +97,7 @@ module.exports = {
 				chunks.push(currentChunk);
 			}
 			// reduce() executes stuff on each element in array by index
-			// reply() in for first chunk
+			// reply() in first chunk in loop
 			// send() for the rest of the message
 			// Promise for guaranteed order
 			return chunks.reduce((promise, chunk, index) => {
