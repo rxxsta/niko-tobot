@@ -45,9 +45,9 @@ module.exports = {
 			},
 		}).then(response => {
 			// First line in response contains some metadata
-			// Second line contains new_message.json
-			const message_line = response.data.split('\n')[1];
-			// Parse new_message.json and remove the weird null bytes
+			// X line contains new_message.json
+			const message_line = response.data.split('\n').find(line => line.includes('new_message.json:'));
+			// Parse new_message.json and remove the weird null byte(s)
 			const new_message = (message_line.substring(message_line.indexOf(':') + 1)).replace('\x00', '');
 
 			// The actual JSON
@@ -57,6 +57,7 @@ module.exports = {
 			const reply = json.md + '\n';
 			// References
 			// Wrap the urls in <> to prevent embeds in message.reply()
+			console.log(json.references_md);
 			const references = json.references_md.replace(/\]\((https?:\/\/[^)]+)\)/g, '](<$1>)');
 			const fullContent = reply + references;
 			// Discord has a max message length of 2000 characters...
