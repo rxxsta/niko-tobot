@@ -57,7 +57,6 @@ module.exports = {
 			const reply = json.md + '\n';
 			// References
 			// Wrap the urls in <> to prevent embeds in message.reply()
-			console.log(json.references_md);
 			const references = json.references_md.replace(/\]\((https?:\/\/[^)]+)\)/g, '](<$1>)');
 			const fullContent = reply + references;
 			// Discord has a max message length of 2000 characters...
