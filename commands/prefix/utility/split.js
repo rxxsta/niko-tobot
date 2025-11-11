@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const crypto = require(crypto);
+const crypto = require('crypto');
 
 module.exports = {
 	name: 'split',
