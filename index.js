@@ -13,9 +13,9 @@ const client = new Client({
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.MessageContent,
 		// Required for voice channel member data
-		// GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.GuildMembers,
 		// Required for tracking when user joins/leaves a voice channel
-		// GatewayIntentBits.GuildVoiceStates,
+		GatewayIntentBits.GuildVoiceStates,
 	],
 });
 
