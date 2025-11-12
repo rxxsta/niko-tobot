@@ -7,7 +7,7 @@ module.exports = {
 	aliases: ['teams'],
 	usage: '[exclude...]',
 
-	execute(message, args) {
+	async execute(message, args) {
 		const voiceChannel = message.member?.voice.channel;
 
 		if (!voiceChannel) {
@@ -74,10 +74,19 @@ module.exports = {
 
 		// Add excluded users info if any were specified
 		if (excludeIds.size > 0) {
-			const excludedMentions = Array.from(excludeIds)
-				.map(id => `<@${id}>`)
-				.join(', ');
-			embed.setFooter({ text: `Excluded: ${excludedMentions}` });
+			const excludedNames = [];
+			for (const id of excludeIds) {
+				try {
+					// Fetch user if not cached
+					const user = await message.client.users.fetch(id);
+					// Try and show a user's username instead of id
+					excludedNames.push(user.username);
+				}
+				catch (err) {
+					excludedNames.push(`ID:${id}`);
+				}
+			}
+			embed.setFooter({ text: `Excluded: ${excludedNames.join(', ')}` });
 		}
 
 		message.reply({ embeds: [embed] });
